@@ -261,7 +261,7 @@
         </div>
     </div> <script>
         // API URL ANDA - JANGAN DIUBAH!
-        const API_URL = 'https://script.google.com/macros/s/AKfycbzAP1eenaRslBycQKtjHyO5QP0UfzCS9iwGROED6YodoMeiMizIIhjCQn1KUmJBSdu_/exec'; 
+        const API_URL = 'https://script.google.com/macros/s/AKfycbw3LZqrWY3lGo79uL0z4QhHAPjtt7lb9mWq1ps5YSJq3Ma5MuD2qSX0mmph_fo429k/exec'; 
         
         const DAFTAR_KELAS = [
             "X FAR", "X KP 1", "X KP 2", "X KP 3",
@@ -301,7 +301,7 @@
                 return logData;
             } catch (error) {
                 console.error("Fetch Error:", error);
-                // Menampilkan alert error di konsol, agar aplikasi tetap bisa dibuka
+                alert("🚨 Gagal memuat data log dari server. Cek koneksi atau URL API.");
                 return []; 
             }
         }
@@ -351,9 +351,11 @@
                 if (!statusKelas[kelas]) {
                     statusKelas[kelas] = { awal: 0, keluar: 0, sisa: 0 };
                 }
+                // Pastikan item.jumlah adalah angka
                 const jumlah = parseInt(item.jumlah);
 
                 if (item.aksi === 'PENGUMPULAN PAGI') {
+                    // Dalam implementasi ini, PENGUMPULAN PAGI yang baru akan menimpa data 'awal'
                     statusKelas[kelas].awal = jumlah;
                 } else if (item.aksi === 'PINJAM (KELUAR)') {
                     statusKelas[kelas].keluar += jumlah;
@@ -394,12 +396,13 @@
             });
         }
 
-        // --- FUNGSI UTAMA (tampilkanLog) ---
+        // --- FUNGSI RIWAYAT LOG ---
         async function tampilkanLog() {
             const logData = await muatLog(); // Memuat data dari online
             const logBody = document.getElementById('log_body');
             logBody.innerHTML = ''; 
             
+            // Urutkan data dari yang terbaru ke terlama
             logData.sort((a, b) => new Date(b.waktu) - new Date(a.waktu));
 
             logData.forEach(item => {
@@ -423,10 +426,6 @@
                 return;
             }
             
-            // Perlu logika untuk menghapus log PENGUMPULAN PAGI lama sebelum mengirim yang baru
-            // LOGIKA PENGHAPUSAN LAMA HANYA BISA DILAKUKAN DI GOOGLE SHEET SAAT INI (doPost hanya Append)
-            // Jadi, kita hanya kirim data baru, menimpa/update harus dilakukan di Apps Script
-
             const newLogEntry = {
                 aksi: 'PENGUMPULAN PAGI',
                 pj: '-', 
@@ -438,7 +437,7 @@
             const success = await kirimLogBaru(newLogEntry);
 
             if (success) {
-                alert(`Pengumpulan HP Awal untuk kelas ${kelas} (${jumlah} unit) berhasil dicatat.`);
+                alert(`Pengumpulan HP Awal untuk kelas ${kelas} (${jumlah} unit) berhasil dicatat dan tersimpan online.`);
                 document.getElementById('pagi_kelas').value = ''; 
                 document.getElementById('pagi_jumlah').value = '';
             }
@@ -490,7 +489,7 @@
             const success = await kirimLogBaru(newLogEntry);
             
             if (success) {
-                alert(`Peminjaman HP oleh ${pj} (${jumlah} unit) berhasil dicatat.`);
+                alert(`Peminjaman HP oleh ${pj} (${jumlah} unit) berhasil dicatat dan tersimpan online.`);
                 document.getElementById('pinjam_pj').value = '';
                 document.getElementById('pinjam_jumlah').value = '';
                 document.getElementById('pinjam_guru').value = '';
@@ -521,7 +520,7 @@
             const success = await kirimLogBaru(newLogEntry);
 
             if (success) {
-                alert(`Pengembalian HP oleh ${pj} (${jumlah} unit) berhasil dicatat.`);
+                alert(`Pengembalian HP oleh ${pj} (${jumlah} unit) berhasil dicatat dan tersimpan online.`);
                 document.getElementById('kembali_pj').value = '';
                 document.getElementById('kembali_jumlah').value = '';
             }
