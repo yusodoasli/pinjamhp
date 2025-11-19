@@ -260,7 +260,7 @@
             </div>
         </div>
     </div> <script>
-        const LOG_KEY = 'hp_log_data';
+        const API_URL = 'https://script.google.com/macros/s/AKfycbw2JWgdlbH3YaqIsT5XUJ0R_LYc3EvTYGVn2c9nAKMLJWLcs6JRE1ooE_rGfKMEfcR1/exec';
         const DAFTAR_KELAS = [
             "X FAR", "X KP 1", "X KP 2", "X KP 3",
             "XI FAR 1", "XI FAR 2", "XI KP 1", "XI KP 2", "XI KP 3",
@@ -286,15 +286,49 @@
             }
         }
         
-        // --- FUNGSI DASAR ---
-        function muatLog() {
-            const data = localStorage.getItem(LOG_KEY);
-            return data ? JSON.parse(data) : [];
-        }
+        // --- FUNGSI API BARU ---
 
-        function simpanLog(logData) {
-            localStorage.setItem(LOG_KEY, JSON.stringify(logData));
+// Mengambil data dari Google Sheet (menggantikan muatLog)
+async function muatLog() {
+    try {
+        const response = await fetch(API_URL, { method: 'GET' });
+        if (!response.ok) {
+            throw new Error('Gagal mengambil data dari server.');
         }
+        const logData = await response.json();
+        return logData;
+    } catch (error) {
+        console.error("Fetch Error:", error);
+        alert("🚨 Gagal memuat data log dari server. Cek koneksi atau URL API.");
+        return []; 
+    }
+}
+
+// Mengirim satu entri log baru ke Google Sheet (menggantikan simpanLog)
+async function kirimLogBaru(newLogEntry) {
+    try {
+        const response = await fetch(API_URL, {
+            method: 'POST',
+            body: JSON.stringify(newLogEntry),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        if (!response.ok) {
+            throw new Error('Gagal menyimpan data ke server.');
+        }
+        
+        // Setelah sukses menyimpan, kita perbarui status dan log di tampilan
+        await perbaruiStatusInventaris();
+        return true;
+        
+    } catch (error) {
+        console.error("Save Error:", error);
+        alert("🚨 Gagal menyimpan data ke server. Cek kembali URL API.");
+        return false;
+    }
+}
         
         // --- FUNGSI EKSPOR DATA KE CSV ---
         function exportLogToCSV() {
@@ -416,110 +450,116 @@
             });
         }
 
-        // --- FUNGSI PENGUMPULAN PAGI (PJ DIHAPUS) ---
-        function catatPengumpulanPagi() {
-            const kelas = document.getElementById('pagi_kelas').value; 
-            // const pj = document.getElementById('pagi_pj').value; // Dihapus
-            const jumlah = document.getElementById('pagi_jumlah').value;
+        // Harus diawali 'async'
+async function catatPengumpulanPagi() { 
+    const kelas = document.getElementById('pagi_kelas').value; 
+    const jumlah = document.getElementById('pagi_jumlah').value;
 
-            if (!kelas || !jumlah) {
-                alert('Pilih Kelas dan isi Jumlah HP pada Pengumpulan Pagi!');
-                return;
-            }
-            
-            const logData = muatLog();
-            
-            // Filter logData untuk MENGHAPUS HANYA log 'PENGUMPULAN PAGI' yang lama untuk kelas ini.
-            let newLogData = logData.filter(item => !(item.aksi === 'PENGUMPULAN PAGI' && item.kelas === kelas));
-            
-            // Tambahkan log Pengumpulan Pagi yang baru (menimpa yang lama)
-            newLogData.unshift({
-                aksi: 'PENGUMPULAN PAGI',
-                waktu: new Date().toISOString(),
-                pj: '-', // Dikosongkan/diisi '-'
-                kelas: kelas,
-                jumlah: jumlah,
-                guru: '' 
-            });
+    if (!kelas || !jumlah) {
+        alert('Pilih Kelas dan isi Jumlah HP pada Pengumpulan Pagi!');
+        return;
+    }
+    
+    // Siapkan data untuk dikirim ke API
+    const newLogEntry = {
+        aksi: 'PENGUMPULAN PAGI',
+        pj: '-', 
+        kelas: kelas,
+        jumlah: jumlah,
+        guru: '' 
+    };
 
-            simpanLog(newLogData);
-            alert(`Pengumpulan HP Awal untuk kelas ${kelas} (${jumlah} unit) berhasil dicatat.`);
-            document.getElementById('pagi_kelas').value = ''; 
-            document.getElementById('pagi_jumlah').value = '';
+    // KIRIM DATA ke Google Sheet
+    const success = await kirimLogBaru(newLogEntry);
+
+    if (success) {
+        alert(`Pengumpulan HP Awal untuk kelas ${kelas} (${jumlah} unit) berhasil dicatat.`);
+        document.getElementById('pagi_kelas').value = ''; 
+        document.getElementById('pagi_jumlah').value = '';
+    }
+}
+
+        // Harus diawali 'async'
+async function catatPeminjaman() {
+    const pj = document.getElementById('pinjam_pj').value;
+    const kelas = document.getElementById('pinjam_kelas').value;
+    const jumlah = document.getElementById('pinjam_jumlah').value;
+    const guru = document.getElementById('pinjam_guru').value;
+
+    if (!pj || !kelas || !jumlah || !guru) {
+        alert('Semua kolom Peminjaman harus diisi!');
+        return;
+    }
+    
+    // VALIDASI STOK (Mengambil data status dari Google Sheet)
+    const logData = await muatLog(); 
+    let statusKelas = { [kelas]: { awal: 0, keluar: 0 } }; 
+    // Logika perhitungan sisa HP sama (tidak berubah)
+    logData.forEach(item => {
+        if (item.kelas === kelas) {
+            const jml = parseInt(item.jumlah);
+            if (item.aksi === 'PENGUMPULAN PAGI') { statusKelas[kelas].awal = jml; }
+            else if (item.aksi === 'PINJAM (KELUAR)') { statusKelas[kelas].keluar += jml; } 
+            else if (item.aksi === 'KEMBALI (MASUK)') { statusKelas[kelas].keluar -= jml; } 
         }
+    });
 
-        // --- FUNGSI PINJAM (VALIDASI SISA HP) ---
-        function catatPeminjaman() {
-            const pj = document.getElementById('pinjam_pj').value;
-            const kelas = document.getElementById('pinjam_kelas').value;
-            const jumlah = document.getElementById('pinjam_jumlah').value;
-            const guru = document.getElementById('pinjam_guru').value;
+    const sisaHP = (statusKelas[kelas].awal || 0) - (statusKelas[kelas].keluar || 0);
+    
+    if (sisaHP < parseInt(jumlah)) {
+        alert(`HP kelas ${kelas} yang tersisa di piket hanya ${sisaHP}. Tidak cukup untuk meminjam ${jumlah} unit. Transaksi dibatalkan!`);
+        return;
+    }
 
-            if (!pj || !kelas || !jumlah || !guru) {
-                alert('Semua kolom Peminjaman harus diisi!');
-                return;
-            }
-            
-            const logData = muatLog();
-            let statusKelas = { [kelas]: { awal: 0, keluar: 0 } }; 
-            logData.forEach(item => {
-                if (item.kelas === kelas) {
-                    const jml = parseInt(item.jumlah);
-                    if (item.aksi === 'PENGUMPULAN PAGI') { statusKelas[kelas].awal = jml; }
-                    else if (item.aksi === 'PINJAM (KELUAR)') { statusKelas[kelas].keluar += jml; } 
-                    else if (item.aksi === 'KEMBALI (MASUK)') { statusKelas[kelas].keluar -= jml; } 
-                }
-            });
+    // Siapkan data untuk dikirim ke API
+    const newLogEntry = { 
+        aksi: 'PINJAM (KELUAR)',
+        pj: pj,
+        kelas: kelas,
+        jumlah: jumlah,
+        guru: guru
+    };
 
-            const sisaHP = (statusKelas[kelas].awal || 0) - (statusKelas[kelas].keluar || 0);
-            
-            if (sisaHP < parseInt(jumlah)) {
-                alert(`HP kelas ${kelas} yang tersisa di piket hanya ${sisaHP}. Tidak cukup untuk meminjam ${jumlah} unit. Transaksi dibatalkan!`);
-                return;
-            }
+    // KIRIM DATA ke Google Sheet
+    const success = await kirimLogBaru(newLogEntry);
+    
+    if (success) {
+        alert(`Peminjaman HP oleh ${pj} (${jumlah} unit) berhasil dicatat.`);
+        document.getElementById('pinjam_pj').value = '';
+        document.getElementById('pinjam_jumlah').value = '';
+        document.getElementById('pinjam_guru').value = '';
+    }
+}
 
-            logData.unshift({ 
-                aksi: 'PINJAM (KELUAR)',
-                waktu: new Date().toISOString(),
-                pj: pj,
-                kelas: kelas,
-                jumlah: jumlah,
-                guru: guru
-            });
+        // Harus diawali 'async'
+async function catatPengembalian() {
+    const pj = document.getElementById('kembali_pj').value;
+    const kelas = document.getElementById('kembali_kelas').value;
+    const jumlah = document.getElementById('kembali_jumlah').value;
 
-            simpanLog(logData);
-            alert(`Peminjaman HP oleh ${pj} (${jumlah} unit) berhasil dicatat.`);
-            document.getElementById('pinjam_pj').value = '';
-            document.getElementById('pinjam_jumlah').value = '';
-            document.getElementById('pinjam_guru').value = '';
-        }
+    if (!pj || !kelas || !jumlah) {
+        alert('Semua kolom Pengembalian harus diisi!');
+        return;
+    }
 
-        // --- FUNGSI PENGEMBALIAN ---
-        function catatPengembalian() {
-            const pj = document.getElementById('kembali_pj').value;
-            const kelas = document.getElementById('kembali_kelas').value;
-            const jumlah = document.getElementById('kembali_jumlah').value;
+    // Siapkan data untuk dikirim ke API
+    const newLogEntry = {
+        aksi: 'KEMBALI (MASUK)',
+        pj: pj,
+        kelas: kelas,
+        jumlah: jumlah,
+        guru: '' 
+    };
 
-            if (!pj || !kelas || !jumlah) {
-                alert('Semua kolom Pengembalian harus diisi!');
-                return;
-            }
+    // KIRIM DATA ke Google Sheet
+    const success = await kirimLogBaru(newLogEntry);
 
-            const logData = muatLog();
-            logData.unshift({
-                aksi: 'KEMBALI (MASUK)',
-                waktu: new Date().toISOString(),
-                pj: pj,
-                kelas: kelas,
-                jumlah: jumlah,
-                guru: '' 
-            });
-
-            simpanLog(logData);
-            alert(`Pengembalian HP oleh ${pj} (${jumlah} unit) berhasil dicatat.`);
-            document.getElementById('kembali_pj').value = '';
-            document.getElementById('kembali_jumlah').value = '';
-        }
+    if (success) {
+        alert(`Pengembalian HP oleh ${pj} (${jumlah} unit) berhasil dicatat.`);
+        document.getElementById('kembali_pj').value = '';
+        document.getElementById('kembali_jumlah').value = '';
+    }
+}
 
         // Jalankan fungsi saat halaman dimuat
         window.onload = function() {
