@@ -26,12 +26,12 @@
 
         /* Input, Select, Button (Ukuran Mobile) */
         input[type="text"], input[type="number"], select, button { 
-            padding: 12px; /* Lebih besar */
+            padding: 12px;
             margin-bottom: 15px;
             width: 100%;
             box-sizing: border-box;
             border: 1px solid #ddd;
-            border-radius: 8px; /* Lebih halus */
+            border-radius: 8px;
             font-size: 16px;
         }
         
@@ -39,7 +39,7 @@
             cursor: pointer;
             font-weight: bold;
             transition: background-color 0.3s;
-            color: white; /* Warna teks putih untuk semua tombol */
+            color: white;
         }
         button:active {
             opacity: 0.8;
@@ -49,8 +49,6 @@
         .btn-pagi { background-color: #f44336; border: none; } 
         .btn-pinjam { background-color: #4CAF50; border: none; }
         .btn-kembali { background-color: #008CBA; border: none; }
-        .btn-export { background-color: #ff9800; border: none; }
-        .btn-reset { background-color: #d32f2f; border: none; }
 
         /* Form Section */
         .form-section { 
@@ -99,13 +97,13 @@
         
         /* --- Tabel Status dan Log (Scrollable) --- */
         .table-wrapper {
-            overflow-x: auto; /* Memungkinkan scroll horizontal pada tabel */
+            overflow-x: auto;
             margin-bottom: 20px;
         }
 
         table { 
             width: 100%; 
-            min-width: 600px; /* Minimal lebar tabel agar tidak terlalu sempit */
+            min-width: 600px;
             border-collapse: collapse; 
             margin-top: 5px; 
             background-color: #fff;
@@ -114,7 +112,7 @@
             border: 1px solid #ddd; 
             padding: 10px; 
             text-align: left; 
-            font-size: 12px; /* Ukuran font lebih kecil agar kolom muat */
+            font-size: 12px;
         }
         th { 
             background-color: #333; 
@@ -124,7 +122,7 @@
         }
         
         #status_inventaris th { background-color: #555; }
-        #status_body td:nth-child(3) { font-weight: bold; } /* HP Keluar */
+        #status_body td:nth-child(3) { font-weight: bold; } 
     </style>
 </head>
 <body>
@@ -214,9 +212,7 @@
 
             <div class="form-section" style="background-color: #fff8e1;">
                 <h3>⚙️ PENGATURAN & CADANGAN DATA</h3>
-                <button class="btn-export" onclick="alert('Fungsi ini harus diperbarui untuk data online. Silakan eksport data dari Google Sheets secara langsung.')">EXPORT RIWAYAT LOG (.csv) - [NON-AKTIF]</button>
-                <button class="btn-reset" onclick="alert('Fungsi reset total memerlukan kode Apps Script tambahan. Silakan hapus data langsung di Google Sheets.')">HAPUS SEMUA RIWAYAT LOG & STATUS - [NON-AKTIF]</button>
-                <p style="font-size: 0.8em; color: #757575; text-align: center;">⚠️ **Peringatan:** Fitur Export dan Reset di non-aktifkan. Lakukan di Google Sheets Anda.</p>
+                <p style="font-size: 0.8em; color: #757575; text-align: center;">⚠️ Fitur Export dan Reset di non-aktifkan. Lakukan di Google Sheets Anda.</p>
             </div>
             
         </div>
@@ -260,8 +256,8 @@
             </div>
         </div>
     </div> <script>
-        // API URL ANDA - JANGAN DIUBAH!
-        const API_URL = 'https://script.google.com/macros/s/AKfycbw3LZqrWY3lGo79uL0z4QhHAPjtt7lb9mWq1ps5YSJq3Ma5MuD2qSX0mmph_fo429k/exec'; 
+        // URL API ANDA YANG BARU
+        const API_URL = 'https://script.google.com/macros/s/AKfycbzEe1jtwCB8yDUD2eLu6wyhXCY0W-ej6-QCOenGWDFEJ-mShOAVG-mlv7SfOhp84oJA/exec'; 
         
         const DAFTAR_KELAS = [
             "X FAR", "X KP 1", "X KP 2", "X KP 3",
@@ -280,7 +276,6 @@
             document.getElementById(tabId).classList.add('active');
             element.classList.add('active');
             
-            // Pastikan data diperbarui saat berpindah ke tab Status/Log
             if (tabId === 'status') {
                 perbaruiStatusInventaris();
             } else if (tabId === 'log') {
@@ -289,8 +284,6 @@
         }
         
         // --- FUNGSI API BARU ---
-
-        // Mengambil data dari Google Sheet (GET request)
         async function muatLog() {
             try {
                 const response = await fetch(API_URL, { method: 'GET' });
@@ -306,7 +299,6 @@
             }
         }
 
-        // Mengirim satu entri log baru ke Google Sheet (POST request)
         async function kirimLogBaru(newLogEntry) {
             try {
                 if (!navigator.onLine) {
@@ -323,24 +315,24 @@
                 });
                 
                 if (!response.ok) {
-                    throw new Error('Gagal menyimpan data ke server. Cek kembali Apps Script.');
+                    // Jika status HTTP bukan 200 OK, ini adalah error server atau izin
+                    throw new Error('Gagal menyimpan data ke server. Periksa Deployment Apps Script.');
                 }
                 
-                // Setelah sukses menyimpan, kita perbarui status dan log di tampilan
                 await perbaruiStatusInventaris(); 
                 await tampilkanLog();
                 return true;
                 
             } catch (error) {
                 console.error("Save Error:", error);
-                alert("🚨 Gagal menyimpan data ke server. Cek kembali URL API.");
+                alert("🚨 Gagal menyimpan data ke server. Periksa kembali URL API atau Izin Deployment Apps Script (harus 'Siapa saja').");
                 return false;
             }
         }
 
         // --- FUNGSI STATUS INVENTARIS ---
         async function perbaruiStatusInventaris() {
-            const logData = await muatLog(); // Memuat data dari online
+            const logData = await muatLog(); 
             const statusBody = document.getElementById('status_body');
             statusBody.innerHTML = '';
             
@@ -351,11 +343,9 @@
                 if (!statusKelas[kelas]) {
                     statusKelas[kelas] = { awal: 0, keluar: 0, sisa: 0 };
                 }
-                // Pastikan item.jumlah adalah angka
                 const jumlah = parseInt(item.jumlah);
 
                 if (item.aksi === 'PENGUMPULAN PAGI') {
-                    // Dalam implementasi ini, PENGUMPULAN PAGI yang baru akan menimpa data 'awal'
                     statusKelas[kelas].awal = jumlah;
                 } else if (item.aksi === 'PINJAM (KELUAR)') {
                     statusKelas[kelas].keluar += jumlah;
@@ -398,18 +388,17 @@
 
         // --- FUNGSI RIWAYAT LOG ---
         async function tampilkanLog() {
-            const logData = await muatLog(); // Memuat data dari online
+            const logData = await muatLog(); 
             const logBody = document.getElementById('log_body');
             logBody.innerHTML = ''; 
             
-            // Urutkan data dari yang terbaru ke terlama
             logData.sort((a, b) => new Date(b.waktu) - new Date(a.waktu));
 
             logData.forEach(item => {
                 const row = logBody.insertRow();
-                row.insertCell().textContent = item.aksi.replace('(KELUAR)', 'K').replace('(MASUK)', 'M').replace('PENGUMPULAN PAGI', 'PAGI'); // Singkat untuk mobile
+                row.insertCell().textContent = item.aksi.replace('(KELUAR)', 'K').replace('(MASUK)', 'M').replace('PENGUMPULAN PAGI', 'PAGI'); 
                 row.insertCell().textContent = new Date(item.waktu).toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit'}); 
-                row.insertCell().textContent = item.pj || '-'; // PJ bisa kosong
+                row.insertCell().textContent = item.pj || '-';
                 row.insertCell().textContent = item.kelas;
                 row.insertCell().textContent = item.jumlah;
                 row.insertCell().textContent = item.guru || '-';
@@ -455,11 +444,9 @@
                 return;
             }
             
-            // VALIDASI STOK (Mengambil data status dari Google Sheet)
             const logData = await muatLog(); 
             let statusKelas = { [kelas]: { awal: 0, keluar: 0 } }; 
             
-            // Logika perhitungan status HP
             logData.forEach(item => {
                 if (item.kelas === kelas) {
                     const jml = parseInt(item.jumlah);
@@ -476,7 +463,6 @@
                 return;
             }
 
-            // Siapkan data untuk dikirim ke API
             const newLogEntry = { 
                 aksi: 'PINJAM (KELUAR)',
                 pj: pj,
@@ -485,7 +471,6 @@
                 guru: guru
             };
 
-            // KIRIM DATA ke Google Sheet
             const success = await kirimLogBaru(newLogEntry);
             
             if (success) {
@@ -507,7 +492,6 @@
                 return;
             }
 
-            // Siapkan data untuk dikirim ke API
             const newLogEntry = {
                 aksi: 'KEMBALI (MASUK)',
                 pj: pj,
@@ -516,7 +500,6 @@
                 guru: '' 
             };
 
-            // KIRIM DATA ke Google Sheet
             const success = await kirimLogBaru(newLogEntry);
 
             if (success) {
@@ -528,7 +511,6 @@
 
         // Jalankan fungsi saat halaman dimuat
         window.onload = function() {
-            // Memastikan tampilan status terisi saat halaman dibuka
             perbaruiStatusInventaris(); 
         };
     </script>
