@@ -1,533 +1,530 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Log & Status HP Sekolah (Mobile Final)</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
-    <style>
-        /* Pengaturan Dasar dan Font */
-        body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            margin: 0; 
-            padding: 0;
-            background-color: #f4f4f9;
-        }
+    <title>Log & Status HP Sekolah (Mobile Final)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <style>
+        /* Pengaturan Dasar dan Font */
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            margin: 0; 
+            padding: 0;
+            background-color: #f4f4f9;
+        }
 
-        /* Container Utama */
-        .container {
-            padding: 10px;
-        }
+        /* Container Utama */
+        .container {
+            padding: 10px;
+        }
 
-        /* Judul */
-        h2, h3 { 
-            color: #333; 
-            margin-top: 15px; 
-            margin-bottom: 10px;
-        }
+        /* Judul */
+        h2, h3 { 
+            color: #333; 
+            margin-top: 15px; 
+            margin-bottom: 10px;
+        }
 
-        /* Input, Select, Button (Ukuran Mobile) */
-        input[type="text"], input[type="number"], select, button { 
-            padding: 12px; /* Lebih besar */
-            margin-bottom: 15px;
-            width: 100%;
-            box-sizing: border-box;
-            border: 1px solid #ddd;
-            border-radius: 8px; /* Lebih halus */
-            font-size: 16px;
-        }
-        
-        button {
-            cursor: pointer;
-            font-weight: bold;
-            transition: background-color 0.3s;
-            color: white; /* Warna teks putih untuk semua tombol */
-        }
-        button:active {
-            opacity: 0.8;
-        }
+        /* Input, Select, Button (Ukuran Mobile) */
+        input[type="text"], input[type="number"], select, button { 
+            padding: 12px; /* Lebih besar */
+            margin-bottom: 15px;
+            width: 100%;
+            box-sizing: border-box;
+            border: 1px solid #ddd;
+            border-radius: 8px; /* Lebih halus */
+            font-size: 16px;
+        }
+        
+        button {
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+            color: white; /* Warna teks putih untuk semua tombol */
+        }
+        button:active {
+            opacity: 0.8;
+        }
 
-        /* Warna Tombol */
-        .btn-pagi { background-color: #f44336; border: none; } 
-        .btn-pinjam { background-color: #4CAF50; border: none; }
-        .btn-kembali { background-color: #008CBA; border: none; }
-        .btn-export { background-color: #ff9800; border: none; }
-        .btn-reset { background-color: #d32f2f; border: none; }
+        /* Warna Tombol */
+        .btn-pagi { background-color: #f44336; border: none; } 
+        .btn-pinjam { background-color: #4CAF50; border: none; }
+        .btn-kembali { background-color: #008CBA; border: none; }
+        .btn-export { background-color: #ff9800; border: none; }
+        .btn-reset { background-color: #d32f2f; border: none; }
 
-        /* Form Section */
-        .form-section { 
-            background-color: white; 
-            padding: 15px; 
-            margin-bottom: 20px; 
-            border-radius: 12px; 
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-        .form-section h3 {
-             border-bottom: 2px solid #eee; 
-             padding-bottom: 8px;
-        }
+        /* Form Section */
+        .form-section { 
+            background-color: white; 
+            padding: 15px; 
+            margin-bottom: 20px; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .form-section h3 {
+             border-bottom: 2px solid #eee; 
+             padding-bottom: 8px;
+        }
 
-        /* --- Tabs Mobile View --- */
-        .tab-buttons {
-            display: flex;
-            justify-content: space-around;
-            background-color: #fff;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            border-bottom: 1px solid #ddd;
-        }
-        .tab-button {
-            flex-grow: 1;
-            padding: 15px 10px;
-            border: none;
-            background-color: #eee;
-            color: #333;
-            font-weight: 600;
-            font-size: 15px;
-            border-radius: 0;
-        }
-        .tab-button.active {
-            background-color: #008CBA;
-            color: white;
-        }
-        .tab-content {
-            padding: 15px 0;
-            display: none;
-        }
-        .tab-content.active {
-            display: block;
-        }
-        
-        /* --- Tabel Status dan Log (Scrollable) --- */
-        .table-wrapper {
-            overflow-x: auto; /* Memungkinkan scroll horizontal pada tabel */
-            margin-bottom: 20px;
-        }
+        /* --- Tabs Mobile View --- */
+        .tab-buttons {
+            display: flex;
+            justify-content: space-around;
+            background-color: #fff;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid #ddd;
+        }
+        .tab-button {
+            flex-grow: 1;
+            padding: 15px 10px;
+            border: none;
+            background-color: #eee;
+            color: #333;
+            font-weight: 600;
+            font-size: 15px;
+            border-radius: 0;
+        }
+        .tab-button.active {
+            background-color: #008CBA;
+            color: white;
+        }
+        .tab-content {
+            padding: 15px 0;
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* --- Tabel Status dan Log (Scrollable) --- */
+        .table-wrapper {
+            overflow-x: auto; /* Memungkinkan scroll horizontal pada tabel */
+            margin-bottom: 20px;
+        }
 
-        table { 
-            width: 100%; 
-            min-width: 600px; /* Minimal lebar tabel agar tidak terlalu sempit */
-            border-collapse: collapse; 
-            margin-top: 5px; 
-            background-color: #fff;
-        }
-        th, td { 
-            border: 1px solid #ddd; 
-            padding: 10px; 
-            text-align: left; 
-            font-size: 12px; /* Ukuran font lebih kecil agar kolom muat */
-        }
-        th { 
-            background-color: #333; 
-            color: white;
-            position: sticky;
-            top: 0;
-        }
-        
-        #status_inventaris th { background-color: #555; }
-        #status_body td:nth-child(3) { font-weight: bold; } /* HP Keluar */
-    </style>
+        table { 
+            width: 100%; 
+            min-width: 600px; /* Minimal lebar tabel agar tidak terlalu sempit */
+            border-collapse: collapse; 
+            margin-top: 5px; 
+            background-color: #fff;
+        }
+        th, td { 
+            border: 1px solid #ddd; 
+            padding: 10px; 
+            text-align: left; 
+            font-size: 12px; /* Ukuran font lebih kecil agar kolom muat */
+        }
+        th { 
+            background-color: #333; 
+            color: white;
+            position: sticky;
+            top: 0;
+        }
+        
+        #status_inventaris th { background-color: #555; }
+        #status_body td:nth-child(3) { font-weight: bold; } /* HP Keluar */
+    </style>
 </head>
 <body>
 
-    <div class="container">
-        <h2>📝 Log HP Sekolah</h2>
-    </div>
+    <div class="container">
+        <h2>📝 Log HP Sekolah</h2>
+    </div>
 
-    <div class="tab-buttons">
-        <button class="tab-button active" onclick="showTab('input', this)">Input Data</button>
-        <button class="tab-button" onclick="showTab('status', this)">Status Inventaris</button>
-        <button class="tab-button" onclick="showTab('log', this)">Riwayat Log</button>
-    </div>
+    <div class="tab-buttons">
+        <button class="tab-button active" onclick="showTab('input', this)">Input Data</button>
+        <button class="tab-button" onclick="showTab('status', this)">Status Inventaris</button>
+        <button class="tab-button" onclick="showTab('log', this)">Riwayat Log</button>
+    </div>
 
-    <div class="container">
-        <div id="input" class="tab-content active">
-            
-            <div class="form-section">
-                <h3>1. PENGUMPULAN PAGI (HP Awal)</h3>
-                <p style="font-size: 14px; margin-top: -10px; color: #777;">Mencatat HP Awal hari untuk kelas.</p>
-                <select id="pagi_kelas" required>
-                    <option value="">Pilih Kelas...</option>
-                    <option value="X FAR">X FAR</option>
-                    <option value="X KP 1">X KP 1</option>
-                    <option value="X KP 2">X KP 2</option>
-                    <option value="X KP 3">X KP 3</option>
-                    <option value="XI FAR 1">XI FAR 1</option>
-                    <option value="XI FAR 2">XI FAR 2</option>
-                    <option value="XI KP 1">XI KP 1</option>
-                    <option value="XI KP 2">XI KP 2</option>
-                    <option value="XI KP 3">XI KP 3</option>
-                    <option value="XII FAR 1">XII FAR 1</option>
-                    <option value="XII FAR 2">XII FAR 2</option>
-                    <option value="XII KP 1">XII KP 1</option>
-                    <option value="XII KP 2">XII KP 2</option>
-                </select>
-                <input type="text" id="pagi_pj" placeholder="Nama PJ yang Mengumpulkan" required>
-                <input type="number" id="pagi_jumlah" placeholder="Jumlah HP Dikumpulkan" required>
-                <button class="btn-pagi" onclick="catatPengumpulanPagi()">Catat Pengumpulan Sekarang</button>
-            </div>
-            
-            <div class="form-section">
-                <h3>2. PINJAM (HP KELUAR)</h3>
-                <input type="text" id="pinjam_pj" placeholder="Nama PJ/Peminjam" required>
-                <select id="pinjam_kelas" required>
-                    <option value="">Pilih Kelas...</option>
-                    <option value="X FAR">X FAR</option>
-                    <option value="X KP 1">X KP 1</option>
-                    <option value="X KP 2">X KP 2</option>
-                    <option value="X KP 3">X KP 3</option>
-                    <option value="XI FAR 1">XI FAR 1</option>
-                    <option value="XI FAR 2">XI FAR 2</option>
-                    <option value="XI KP 1">XI KP 1</option>
-                    <option value="XI KP 2">XI KP 2</option>
-                    <option value="XI KP 3">XI KP 3</option>
-                    <option value="XII FAR 1">XII FAR 1</option>
-                    <option value="XII FAR 2">XII FAR 2</option>
-                    <option value="XII KP 1">XII KP 1</option>
-                    <option value="XII KP 2">XII KP 2</option>
-                </select>
-                <input type="number" id="pinjam_jumlah" placeholder="Jumlah HP Dipinjam" required>
-                <input type="text" id="pinjam_guru" placeholder="Guru Mata Pelajaran" required>
-                <button class="btn-pinjam" onclick="catatPeminjaman()">Catat Peminjaman Sekarang</button>
-            </div>
+    <div class="container">
+        <div id="input" class="tab-content active">
+            
+            <div class="form-section">
+                <h3>1. PENGUMPULAN PAGI (HP Awal)</h3>
+                <p style="font-size: 14px; margin-top: -10px; color: #777;">Mencatat HP Awal hari untuk kelas.</p>
+                <select id="pagi_kelas" required>
+                    <option value="">Pilih Kelas...</option>
+                    <option value="X FAR">X FAR</option>
+                    <option value="X KP 1">X KP 1</option>
+                    <option value="X KP 2">X KP 2</option>
+                    <option value="X KP 3">X KP 3</option>
+                    <option value="XI FAR 1">XI FAR 1</option>
+                    <option value="XI FAR 2">XI FAR 2</option>
+                    <option value="XI KP 1">XI KP 1</option>
+                    <option value="XI KP 2">XI KP 2</option>
+                    <option value="XI KP 3">XI KP 3</option>
+                    <option value="XII FAR 1">XII FAR 1</option>
+                    <option value="XII FAR 2">XII FAR 2</option>
+                    <option value="XII KP 1">XII KP 1</option>
+                    <option value="XII KP 2">XII KP 2</option>
+                </select>
+                <input type="number" id="pagi_jumlah" placeholder="Jumlah HP Dikumpulkan" required>
+                <button class="btn-pagi" onclick="catatPengumpulanPagi()">Catat Pengumpulan Sekarang</button>
+            </div>
+            
+            <div class="form-section">
+                <h3>2. PINJAM (HP KELUAR)</h3>
+                <input type="text" id="pinjam_pj" placeholder="Nama PJ/Peminjam" required>
+                <select id="pinjam_kelas" required>
+                    <option value="">Pilih Kelas...</option>
+                    <option value="X FAR">X FAR</option>
+                    <option value="X KP 1">X KP 1</option>
+                    <option value="X KP 2">X KP 2</option>
+                    <option value="X KP 3">X KP 3</option>
+                    <option value="XI FAR 1">XI FAR 1</option>
+                    <option value="XI FAR 2">XI FAR 2</option>
+                    <option value="XI KP 1">XI KP 1</option>
+                    <option value="XI KP 2">XI KP 2</option>
+                    <option value="XI KP 3">XI KP 3</option>
+                    <option value="XII FAR 1">XII FAR 1</option>
+                    <option value="XII FAR 2">XII FAR 2</option>
+                    <option value="XII KP 1">XII KP 1</option>
+                    <option value="XII KP 2">XII KP 2</option>
+                </select>
+                <input type="number" id="pinjam_jumlah" placeholder="Jumlah HP Dipinjam" required>
+                <input type="text" id="pinjam_guru" placeholder="Guru Mata Pelajaran" required>
+                <button class="btn-pinjam" onclick="catatPeminjaman()">Catat Peminjaman Sekarang</button>
+            </div>
 
-            <div class="form-section">
-                <h3>3. KEMBALI (HP MASUK)</h3>
-                <input type="text" id="kembali_pj" placeholder="Nama PJ/Pengembali" required>
-                <select id="kembali_kelas" required>
-                    <option value="">Pilih Kelas...</option>
-                    <option value="X FAR">X FAR</option>
-                    <option value="X KP 1">X KP 1</option>
-                    <option value="X KP 2">X KP 2</option>
-                    <option value="X KP 3">X KP 3</option>
-                    <option value="XI FAR 1">XI FAR 1</option>
-                    <option value="XI FAR 2">XI FAR 2</option>
-                    <option value="XI KP 1">XI KP 1</option>
-                    <option value="XI KP 2">XI KP 2</option>
-                    <option value="XI KP 3">XI KP 3</option>
-                    <option value="XII FAR 1">XII FAR 1</option>
-                    <option value="XII FAR 2">XII FAR 2</option>
-                    <option value="XII KP 1">XII KP 1</option>
-                    <option value="XII KP 2">XII KP 2</option>
-                </select>
-                <input type="number" id="kembali_jumlah" placeholder="Jumlah HP Dikembalikan" required>
-                <button class="btn-kembali" onclick="catatPengembalian()">Catat Pengembalian Sekarang</button>
-            </div>
+            <div class="form-section">
+                <h3>3. KEMBALI (HP MASUK)</h3>
+                <input type="text" id="kembali_pj" placeholder="Nama PJ/Pengembali" required>
+                <select id="kembali_kelas" required>
+                    <option value="">Pilih Kelas...</option>
+                    <option value="X FAR">X FAR</option>
+                    <option value="X KP 1">X KP 1</option>
+                    <option value="X KP 2">X KP 2</option>
+                    <option value="X KP 3">X KP 3</option>
+                    <option value="XI FAR 1">XI FAR 1</option>
+                    <option value="XI FAR 2">XI FAR 2</option>
+                    <option value="XI KP 1">XI KP 1</option>
+                    <option value="XI KP 2">XI KP 2</option>
+                    <option value="XI KP 3">XI KP 3</option>
+                    <option value="XII FAR 1">XII FAR 1</option>
+                    <option value="XII FAR 2">XII FAR 2</option>
+                    <option value="XII KP 1">XII KP 1</option>
+                    <option value="XII KP 2">XII KP 2</option>
+                </select>
+                <input type="number" id="kembali_jumlah" placeholder="Jumlah HP Dikembalikan" required>
+                <button class="btn-kembali" onclick="catatPengembalian()">Catat Pengembalian Sekarang</button>
+            </div>
 
-            <div class="form-section" style="background-color: #fff8e1;">
-                <h3>⚙️ PENGATURAN & CADANGAN DATA</h3>
-                <button class="btn-export" onclick="exportLogToCSV()">EXPORT RIWAYAT LOG (.csv) - CADANGAN</button>
-                <button class="btn-reset" onclick="hapusSemuaData()">HAPUS SEMUA RIWAYAT LOG & STATUS (RESET TOTAL)</button>
-                <p style="font-size: 0.8em; color: #757575; text-align: center;">⚠️ **Peringatan:** Wajib Cadangkan Data sebelum Reset Total!</p>
-            </div>
-            
-        </div>
+            <div class="form-section" style="background-color: #fff8e1;">
+                <h3>⚙️ PENGATURAN & CADANGAN DATA</h3>
+                <button class="btn-export" onclick="exportLogToCSV()">EXPORT RIWAYAT LOG (.csv) - CADANGAN</button>
+                <button class="btn-reset" onclick="hapusSemuaData()">HAPUS SEMUA RIWAYAT LOG & STATUS (RESET TOTAL)</button>
+                <p style="font-size: 0.8em; color: #757575; text-align: center;">⚠️ **Peringatan:** Wajib Cadangkan Data sebelum Reset Total!</p>
+            </div>
+            
+        </div>
 
-        <div id="status" class="tab-content">
-            <h3>📊 Status HP Terkini</h3>
-            <div class="table-wrapper">
-                <table id="status_inventaris">
-                    <thead>
-                        <tr>
-                            <th>Kelas</th>
-                            <th>HP Awal</th>
-                            <th>HP Keluar</th>
-                            <th>HP Sisa</th>
-                            <th>Keterangan</th>
-                        </tr>
-                    </thead>
-                    <tbody id="status_body">
-                        </tbody>
-                </table>
-            </div>
-        </div>
+        <div id="status" class="tab-content">
+            <h3>📊 Status HP Terkini</h3>
+            <div class="table-wrapper">
+                <table id="status_inventaris">
+                    <thead>
+                        <tr>
+                            <th>Kelas</th>
+                            <th>HP Awal</th>
+                            <th>HP Keluar</th>
+                            <th>HP Sisa</th>
+                            <th>Keterangan</th>
+                        </tr>
+                    </thead>
+                    <tbody id="status_body">
+                        </tbody>
+                </table>
+            </div>
+        </div>
 
-        <div id="log" class="tab-content">
-            <h3>Riwayat Log (Aksi)</h3>
-            <div class="table-wrapper">
-                <table id="log_table">
-                    <thead>
-                        <tr>
-                            <th>Aksi</th>
-                            <th>Waktu</th>
-                            <th>PJ/Peminjam</th>
-                            <th>Kelas</th>
-                            <th>Jml HP</th>
-                            <th>Guru Mapel</th>
-                        </tr>
-                    </thead>
-                    <tbody id="log_body">
-                        </tbody>
-                </table>
-            </div>
-        </div>
-    </div> <script>
-        const LOG_KEY = 'hp_log_data';
-        const DAFTAR_KELAS = [
-            "X FAR", "X KP 1", "X KP 2", "X KP 3",
-            "XI FAR 1", "XI FAR 2", "XI KP 1", "XI KP 2", "XI KP 3",
-            "XII FAR 1", "XII FAR 2", "XII KP 1", "XII KP 2"
-        ];
+        <div id="log" class="tab-content">
+            <h3>Riwayat Log (Aksi)</h3>
+            <div class="table-wrapper">
+                <table id="log_table">
+                    <thead>
+                        <tr>
+                            <th>Aksi</th>
+                            <th>Waktu</th>
+                            <th>PJ/Peminjam</th>
+                            <th>Kelas</th>
+                            <th>Jml HP</th>
+                            <th>Guru Mapel</th>
+                        </tr>
+                    </thead>
+                    <tbody id="log_body">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+    </div> <script>
+        const LOG_KEY = 'hp_log_data';
+        const DAFTAR_KELAS = [
+            "X FAR", "X KP 1", "X KP 2", "X KP 3",
+            "XI FAR 1", "XI FAR 2", "XI KP 1", "XI KP 2", "XI KP 3",
+            "XII FAR 1", "XII FAR 2", "XII KP 1", "XII KP 2"
+        ];
 
-        // --- FUNGSI TABS ---
-        function showTab(tabId, element) {
-            const contents = document.querySelectorAll('.tab-content');
-            contents.forEach(content => content.classList.remove('active'));
+        // --- FUNGSI TABS ---
+        function showTab(tabId, element) {
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => content.classList.remove('active'));
 
-            const buttons = document.querySelectorAll('.tab-button');
-            buttons.forEach(button => button.classList.remove('active'));
+            const buttons = document.querySelectorAll('.tab-button');
+            buttons.forEach(button => button.classList.remove('active'));
 
-            document.getElementById(tabId).classList.add('active');
-            element.classList.add('active');
-            
-            // Pastikan data diperbarui saat berpindah ke tab Status/Log
-            if (tabId === 'status') {
-                perbaruiStatusInventaris();
-            } else if (tabId === 'log') {
-                tampilkanLog();
-            }
-        }
-        
-        // --- FUNGSI DASAR (SAMA SEPERTI SEBELUMNYA) ---
-        function muatLog() {
-            const data = localStorage.getItem(LOG_KEY);
-            return data ? JSON.parse(data) : [];
-        }
+            document.getElementById(tabId).classList.add('active');
+            element.classList.add('active');
+            
+            // Pastikan data diperbarui saat berpindah ke tab Status/Log
+            if (tabId === 'status') {
+                perbaruiStatusInventaris();
+            } else if (tabId === 'log') {
+                tampilkanLog();
+            }
+        }
+        
+        // --- FUNGSI DASAR (SAMA SEPERTI SEBELUMNYA) ---
+        function muatLog() {
+            const data = localStorage.getItem(LOG_KEY);
+            return data ? JSON.parse(data) : [];
+        }
 
-        function simpanLog(logData) {
-            localStorage.setItem(LOG_KEY, JSON.stringify(logData));
-        }
-        
-        // --- FUNGSI EKSPOR DATA KE CSV ---
-        function exportLogToCSV() {
-            const logData = muatLog();
-            if (logData.length === 0) {
-                alert("Tidak ada data log untuk diekspor.");
-                return;
-            }
+        function simpanLog(logData) {
+            localStorage.setItem(LOG_KEY, JSON.stringify(logData));
+        }
+        
+        // --- FUNGSI EKSPOR DATA KE CSV ---
+        function exportLogToCSV() {
+            const logData = muatLog();
+            if (logData.length === 0) {
+                alert("Tidak ada data log untuk diekspor.");
+                return;
+            }
 
-            const headers = ["Aksi", "Waktu", "Tanggal", "PJ_Peminjam", "Kelas", "Jumlah_HP", "Guru_Mapel"];
+            const headers = ["Aksi", "Waktu", "Tanggal", "PJ_Peminjam", "Kelas", "Jumlah_HP", "Guru_Mapel"];
 
-            const rows = logData.map(item => [
-                item.aksi,
-                new Date(item.waktu).toLocaleTimeString('id-ID'),
-                new Date(item.waktu).toLocaleDateString('id-ID'),
-                item.pj || '', 
-                item.kelas,
-                item.jumlah,
-                item.guru || '-'
-            ]);
+            const rows = logData.map(item => [
+                item.aksi,
+                new Date(item.waktu).toLocaleTimeString('id-ID'),
+                new Date(item.waktu).toLocaleDateString('id-ID'),
+                item.pj || '', 
+                item.kelas,
+                item.jumlah,
+                item.guru || '-'
+            ]);
 
-            let csvContent = headers.join(";") + "\n" + rows.map(e => e.join(";")).join("\n");
+            let csvContent = headers.join(";") + "\n" + rows.map(e => e.join(";")).join("\n");
 
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement("a");
-            const url = URL.createObjectURL(blob);
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            const url = URL.createObjectURL(blob);
 
-            link.setAttribute("href", url);
-            link.setAttribute("download", `log_hp_${new Date().toLocaleDateString('id-ID').replace(/\//g, '-')}.csv`);
-            
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            alert("Data log berhasil diekspor ke file CSV!");
-        }
+            link.setAttribute("href", url);
+            link.setAttribute("download", `log_hp_${new Date().toLocaleDateString('id-ID').replace(/\//g, '-')}.csv`);
+            
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            alert("Data log berhasil diekspor ke file CSV!");
+        }
 
-        // --- FUNGSI HAPUS SEMUA DATA (RESET TOTAL) ---
-        function hapusSemuaData() {
-            if (confirm("ANDA YAKIN INGIN MENGHAPUS SEMUA RIWAYAT LOG DAN STATUS INVENTARIS? Pastikan Anda sudah mencadangkan data!")) {
-                localStorage.removeItem(LOG_KEY);
-                alert("Semua data log berhasil dihapus. Halaman akan dimuat ulang untuk memulai sesi baru.");
-                location.reload(); 
-            }
-        }
+        // --- FUNGSI HAPUS SEMUA DATA (RESET TOTAL) ---
+        function hapusSemuaData() {
+            if (confirm("ANDA YAKIN INGIN MENGHAPUS SEMUA RIWAYAT LOG DAN STATUS INVENTARIS? Pastikan Anda sudah mencadangkan data!")) {
+                localStorage.removeItem(LOG_KEY);
+                alert("Semua data log berhasil dihapus. Halaman akan dimuat ulang untuk memulai sesi baru.");
+                location.reload(); 
+            }
+        }
 
-        // --- FUNGSI STATUS INVENTARIS ---
-        function perbaruiStatusInventaris() {
-            const logData = muatLog();
-            const statusBody = document.getElementById('status_body');
-            statusBody.innerHTML = '';
-            
-            const statusKelas = {}; 
+        // --- FUNGSI STATUS INVENTARIS ---
+        function perbaruiStatusInventaris() {
+            const logData = muatLog();
+            const statusBody = document.getElementById('status_body');
+            statusBody.innerHTML = '';
+            
+            const statusKelas = {}; 
 
-            logData.forEach(item => {
-                const kelas = item.kelas;
-                if (!statusKelas[kelas]) {
-                    statusKelas[kelas] = { awal: 0, keluar: 0, sisa: 0 };
-                }
-                const jumlah = parseInt(item.jumlah);
+            logData.forEach(item => {
+                const kelas = item.kelas;
+                if (!statusKelas[kelas]) {
+                    statusKelas[kelas] = { awal: 0, keluar: 0, sisa: 0 };
+                }
+                const jumlah = parseInt(item.jumlah);
 
-                if (item.aksi === 'PENGUMPULAN PAGI') {
-                    statusKelas[kelas].awal = jumlah;
-                } else if (item.aksi === 'PINJAM (KELUAR)') {
-                    statusKelas[kelas].keluar += jumlah;
-                } else if (item.aksi === 'KEMBALI (MASUK)') {
-                    statusKelas[kelas].keluar -= jumlah;
-                }
-            });
+                if (item.aksi === 'PENGUMPULAN PAGI') {
+                    statusKelas[kelas].awal = jumlah;
+                } else if (item.aksi === 'PINJAM (KELUAR)') {
+                    statusKelas[kelas].keluar += jumlah;
+                } else if (item.aksi === 'KEMBALI (MASUK)') {
+                    statusKelas[kelas].keluar -= jumlah;
+                }
+            });
 
-            DAFTAR_KELAS.forEach(kelas => {
-                const status = statusKelas[kelas] || { awal: 0, keluar: 0, sisa: 0 };
-                status.sisa = status.awal - status.keluar;
+            DAFTAR_KELAS.forEach(kelas => {
+                const status = statusKelas[kelas] || { awal: 0, keluar: 0, sisa: 0 };
+                status.sisa = status.awal - status.keluar;
 
-                const row = statusBody.insertRow();
-                row.insertCell().textContent = kelas;
-                row.insertCell().textContent = status.awal;
-                
-                const cellKeluar = row.insertCell();
-                cellKeluar.textContent = status.keluar < 0 ? 'Error!' : status.keluar;
-                cellKeluar.style.backgroundColor = status.keluar > 0 ? '#ffdddd' : '#ddffdd'; 
+                const row = statusBody.insertRow();
+                row.insertCell().textContent = kelas;
+                row.insertCell().textContent = status.awal;
+                
+                const cellKeluar = row.insertCell();
+                cellKeluar.textContent = status.keluar < 0 ? 'Error!' : status.keluar;
+                cellKeluar.style.backgroundColor = status.keluar > 0 ? '#ffdddd' : '#ddffdd'; 
 
-                const cellSisa = row.insertCell();
-                cellSisa.textContent = status.sisa;
-                cellSisa.style.fontWeight = 'bold';
-                cellSisa.style.color = status.sisa < 0 ? 'red' : 'green';
-                
-                let keterangan = '';
-                if (status.awal === 0) {
-                    keterangan = 'Belum ada pengumpulan.';
-                } else if (status.sisa < 0 || status.keluar < 0) {
-                    keterangan = 'ERROR!';
-                    row.style.backgroundColor = '#ffcdd2'; 
-                } else if (status.keluar > 0) {
-                    keterangan = 'Sedang Dipinjam.';
-                } else {
-                    keterangan = 'HP Lengkap.';
-                }
-                row.insertCell().textContent = keterangan;
-            });
-        }
+                const cellSisa = row.insertCell();
+                cellSisa.textContent = status.sisa;
+                cellSisa.style.fontWeight = 'bold';
+                cellSisa.style.color = status.sisa < 0 ? 'red' : 'green';
+                
+                let keterangan = '';
+                if (status.awal === 0) {
+                    keterangan = 'Belum ada pengumpulan.';
+                } else if (status.sisa < 0 || status.keluar < 0) {
+                    keterangan = 'ERROR!';
+                    row.style.backgroundColor = '#ffcdd2'; 
+                } else if (status.keluar > 0) {
+                    keterangan = 'Sedang Dipinjam.';
+                } else {
+                    keterangan = 'HP Lengkap.';
+                }
+                row.insertCell().textContent = keterangan;
+            });
+        }
 
-        // --- FUNGSI UTAMA (tampilkanLog) ---
-        function tampilkanLog() {
-            const logData = muatLog();
-            const logBody = document.getElementById('log_body');
-            logBody.innerHTML = ''; 
-            
-            logData.sort((a, b) => new Date(b.waktu) - new Date(a.waktu));
+        // --- FUNGSI UTAMA (tampilkanLog) ---
+        function tampilkanLog() {
+            const logData = muatLog();
+            const logBody = document.getElementById('log_body');
+            logBody.innerHTML = ''; 
+            
+            logData.sort((a, b) => new Date(b.waktu) - new Date(a.waktu));
 
-            logData.forEach(item => {
-                const row = logBody.insertRow();
-                row.insertCell().textContent = item.aksi.replace('(KELUAR)', 'K').replace('(MASUK)', 'M').replace('PENGUMPULAN PAGI', 'PAGI'); // Singkat untuk mobile
-                row.insertCell().textContent = new Date(item.waktu).toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit'}); 
-                row.insertCell().textContent = item.pj || '-';
-                row.insertCell().textContent = item.kelas;
-                row.insertCell().textContent = item.jumlah;
-                row.insertCell().textContent = item.guru || '-';
-            });
-        }
+            logData.forEach(item => {
+                const row = logBody.insertRow();
+                row.insertCell().textContent = item.aksi.replace('(KELUAR)', 'K').replace('(MASUK)', 'M').replace('PENGUMPULAN PAGI', 'PAGI'); // Singkat untuk mobile
+                row.insertCell().textContent = new Date(item.waktu).toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit'}); 
+                row.insertCell().textContent = item.pj || '-';
+                row.insertCell().textContent = item.kelas;
+                row.insertCell().textContent = item.jumlah;
+                row.insertCell().textContent = item.guru || '-';
+            });
+        }
 
-        // --- FUNGSI PENGUMPULAN PAGI ---
-        function catatPengumpulanPagi() {
-            const kelas = document.getElementById('pagi_kelas').value; 
-            const pj = document.getElementById('pagi_pj').value;
-            const jumlah = document.getElementById('pagi_jumlah').value;
+        // --- FUNGSI PENGUMPULAN PAGI ---
+        function catatPengumpulanPagi() {
+            const kelas = document.getElementById('pagi_kelas').value; 
+            const pj = '-'; // PJ Dihapus dari input, ditetapkan default
+            const jumlah = document.getElementById('pagi_jumlah').value;
 
-            if (!kelas || !pj || !jumlah) {
-                alert('Pilih Kelas, isi Nama PJ, dan isi Jumlah HP pada Pengumpulan Pagi!');
-                return;
-            }
-            
-            const logData = muatLog();
-            
-            // Filter logData untuk MENGHAPUS HANYA log 'PENGUMPULAN PAGI' yang lama untuk kelas ini.
-            let newLogData = logData.filter(item => !(item.aksi === 'PENGUMPULAN PAGI' && item.kelas === kelas));
-            
-            // Tambahkan log Pengumpulan Pagi yang baru (menimpa yang lama)
-            newLogData.unshift({
-                aksi: 'PENGUMPULAN PAGI',
-                waktu: new Date().toISOString(),
-                pj: pj, 
-                kelas: kelas,
-                jumlah: jumlah,
-                guru: '' 
-            });
+            if (!kelas || !jumlah) {
+                alert('Pilih Kelas dan isi Jumlah HP pada Pengumpulan Pagi!');
+                return;
+            }
+            
+            const logData = muatLog();
+            
+            // Filter logData untuk MENGHAPUS HANYA log 'PENGUMPULAN PAGI' yang lama untuk kelas ini.
+            let newLogData = logData.filter(item => !(item.aksi === 'PENGUMPULAN PAGI' && item.kelas === kelas));
+            
+            // Tambahkan log Pengumpulan Pagi yang baru (menimpa yang lama)
+            newLogData.unshift({
+                aksi: 'PENGUMPULAN PAGI',
+                waktu: new Date().toISOString(),
+                pj: pj, 
+                kelas: kelas,
+                jumlah: jumlah,
+                guru: '' 
+            });
 
-            simpanLog(newLogData);
-            // Tidak perlu tampilkanLog di sini, karena pengguna masih di tab input
-            alert(`Pengumpulan HP Awal untuk kelas ${kelas} (${jumlah} unit) berhasil dicatat.`);
-            document.getElementById('pagi_kelas').value = ''; 
-            document.getElementById('pagi_pj').value = ''; 
-            document.getElementById('pagi_jumlah').value = '';
-        }
+            simpanLog(newLogData);
+            alert(`Pengumpulan HP Awal untuk kelas ${kelas} (${jumlah} unit) berhasil dicatat.`);
+            document.getElementById('pagi_kelas').value = ''; 
+            document.getElementById('pagi_jumlah').value = '';
+        }
 
-        // --- FUNGSI PINJAM (VALIDASI SISA HP) ---
-        function catatPeminjaman() {
-            const pj = document.getElementById('pinjam_pj').value;
-            const kelas = document.getElementById('pinjam_kelas').value;
-            const jumlah = document.getElementById('pinjam_jumlah').value;
-            const guru = document.getElementById('pinjam_guru').value;
+        // --- FUNGSI PINJAM (VALIDASI SISA HP) ---
+        function catatPeminjaman() {
+            const pj = document.getElementById('pinjam_pj').value;
+            const kelas = document.getElementById('pinjam_kelas').value;
+            const jumlah = document.getElementById('pinjam_jumlah').value;
+            const guru = document.getElementById('pinjam_guru').value;
 
-            if (!pj || !kelas || !jumlah || !guru) {
-                alert('Semua kolom Peminjaman harus diisi!');
-                return;
-            }
-            
-            const logData = muatLog();
-            let statusKelas = { [kelas]: { awal: 0, keluar: 0 } }; 
-            logData.forEach(item => {
-                if (item.kelas === kelas) {
-                    const jml = parseInt(item.jumlah);
-                    if (item.aksi === 'PENGUMPULAN PAGI') { statusKelas[kelas].awal = jml; }
-                    else if (item.aksi === 'PINJAM (KELUAR)') { statusKelas[kelas].keluar += jml; } 
-                    else if (item.aksi === 'KEMBALI (MASUK)') { statusKelas[kelas].keluar -= jml; } 
-                }
-            });
+            if (!pj || !kelas || !jumlah || !guru) {
+                alert('Semua kolom Peminjaman harus diisi!');
+                return;
+            }
+            
+            const logData = muatLog();
+            let statusKelas = { [kelas]: { awal: 0, keluar: 0 } }; 
+            logData.forEach(item => {
+                if (item.kelas === kelas) {
+                    const jml = parseInt(item.jumlah);
+                    if (item.aksi === 'PENGUMPULAN PAGI') { statusKelas[kelas].awal = jml; }
+                    else if (item.aksi === 'PINJAM (KELUAR)') { statusKelas[kelas].keluar += jml; } 
+                    else if (item.aksi === 'KEMBALI (MASUK)') { statusKelas[kelas].keluar -= jml; } 
+                }
+            });
 
-            const sisaHP = (statusKelas[kelas].awal || 0) - (statusKelas[kelas].keluar || 0);
-            
-            if (sisaHP < parseInt(jumlah)) {
-                alert(`HP kelas ${kelas} yang tersisa di piket hanya ${sisaHP}. Tidak cukup untuk meminjam ${jumlah} unit. Transaksi dibatalkan!`);
-                return;
-            }
+            const sisaHP = (statusKelas[kelas].awal || 0) - (statusKelas[kelas].keluar || 0);
+            
+            if (sisaHP < parseInt(jumlah)) {
+                alert(`HP kelas ${kelas} yang tersisa di piket hanya ${sisaHP}. Tidak cukup untuk meminjam ${jumlah} unit. Transaksi dibatalkan!`);
+                return;
+            }
 
-            logData.unshift({ 
-                aksi: 'PINJAM (KELUAR)',
-                waktu: new Date().toISOString(),
-                pj: pj,
-                kelas: kelas,
-                jumlah: jumlah,
-                guru: guru
-            });
+            logData.unshift({ 
+                aksi: 'PINJAM (KELUAR)',
+                waktu: new Date().toISOString(),
+                pj: pj,
+                kelas: kelas,
+                jumlah: jumlah,
+                guru: guru
+            });
 
-            simpanLog(logData);
-            alert(`Peminjaman HP oleh ${pj} (${jumlah} unit) berhasil dicatat.`);
-            document.getElementById('pinjam_pj').value = '';
-            document.getElementById('pinjam_jumlah').value = '';
-            document.getElementById('pinjam_guru').value = '';
-        }
+            simpanLog(logData);
+            alert(`Peminjaman HP oleh ${pj} (${jumlah} unit) berhasil dicatat.`);
+            document.getElementById('pinjam_pj').value = '';
+            document.getElementById('pinjam_jumlah').value = '';
+            document.getElementById('pinjam_guru').value = '';
+        }
 
-        // --- FUNGSI PENGEMBALIAN ---
-        function catatPengembalian() {
-            const pj = document.getElementById('kembali_pj').value;
-            const kelas = document.getElementById('kembali_kelas').value;
-            const jumlah = document.getElementById('kembali_jumlah').value;
+        // --- FUNGSI PENGEMBALIAN ---
+        function catatPengembalian() {
+            const pj = document.getElementById('kembali_pj').value;
+            const kelas = document.getElementById('kembali_kelas').value;
+            const jumlah = document.getElementById('kembali_jumlah').value;
 
-            if (!pj || !kelas || !jumlah) {
-                alert('Semua kolom Pengembalian harus diisi!');
-                return;
-            }
+            if (!pj || !kelas || !jumlah) {
+                alert('Semua kolom Pengembalian harus diisi!');
+                return;
+            }
 
-            const logData = muatLog();
-            logData.unshift({
-                aksi: 'KEMBALI (MASUK)',
-                waktu: new Date().toISOString(),
-                pj: pj,
-                kelas: kelas,
-                jumlah: jumlah,
-                guru: '' 
-            });
+            const logData = muatLog();
+            logData.unshift({
+                aksi: 'KEMBALI (MASUK)',
+                waktu: new Date().toISOString(),
+                pj: pj,
+                kelas: kelas,
+                jumlah: jumlah,
+                guru: '' 
+            });
 
-            simpanLog(logData);
-            alert(`Pengembalian HP oleh ${pj} (${jumlah} unit) berhasil dicatat.`);
-            document.getElementById('kembali_pj').value = '';
-            document.getElementById('kembali_jumlah').value = '';
-        }
+            simpanLog(logData);
+            alert(`Pengembalian HP oleh ${pj} (${jumlah} unit) berhasil dicatat.`);
+            document.getElementById('kembali_pj').value = '';
+            document.getElementById('kembali_jumlah').value = '';
+        }
 
-        // Jalankan fungsi saat halaman dimuat
-        window.onload = function() {
-            // Kita tidak memuat tabel di awal agar fokus pada input
-        };
-    </script>
+        // Jalankan fungsi saat halaman dimuat
+        window.onload = function() {
+            // Kita tidak memuat tabel di awal agar fokus pada input
+        };
+    </script>
 
 </body>
 </html>
